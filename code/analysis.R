@@ -125,6 +125,30 @@ data.merge$Gas.bottle <- as.numeric(with(data.merge,
                                          ifelse(grepl("Gas bottle", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE, data.merge$Answer.1), 
                                                 paste0(0),1)))
 
+names(data.merge)
+## Checking unique voucher
+uniquevoucher <- unique(data.merge$Voucher)
+uniquebarcode <- unique(data.merge$Barcode)
+
 #### Now Summmary of consumption per household
 
+str(data.merge)
 
+write.csv(data.merge, file = "out/datamerge.csv",na="")
+
+data.sum <- aggregate(data.merge$Barcode ,
+                      list(Adult.diapers  = data.merge$Adult.diapers ,          Disinfectant = data.merge$Disinfectant ,
+                           Food = data.merge$Food ,   Household.hardware.items = data.merge$Household.hardware.items , 
+                           Other.hygiene.items = data.merge$Other.hygiene.items ,      Adult.shampoo = data.merge$Adult.shampoo ,
+                           Baby.diapers = data.merge$Baby.diapers , Dishwashing.liquid = data.merge$Dishwashing.liquid ,
+                           Womens.sanitary.napkins = data.merge$Womens.sanitary.napkins ,  Baby.shampoo = data.merge$Baby.shampoo ,
+                           Other.items = data.merge$Other.items , Gas.bottle = data.merge$Gas.bottle ,
+                           Laundry.soap = data.merge$Laundry.soap , Soap.bars = data.merge$Soap.bars ),
+                      sum, na.rm = TRUE
+                    )
+data.cast <- dcast(data.merge, Barcode ~ Adult.diapers +   Disinfectant +
+                  Food + Household.hardware.items + Other.hygiene.items + Adult.shampoo +
+                    Baby.diapers + Dishwashing.liquid + Womens.sanitary.napkins +
+                    Baby.shampoo + Other.items + Gas.bottle + Laundry.soap + Soap.bars, sum)
+
+data.cast <- dcast(data.merge, Barcode ~ Adult.diapers , sum)
