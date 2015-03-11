@@ -69,9 +69,7 @@ data.2 <- data[data$Service.Name == "Zaatari gas",]
 
 
 ### Add a column per item type
-data.merge$gas.fill <- as.numeric(with(data.merge, 
-                                            ifelse(data$Service.Name == "Zaatari gas"), 
-                                                   paste0(0),1)))
+data.merge$gas.fill <- as.numeric(with(data.merge, ifelse(data$Service.Name == "Zaatari gas"), paste0(0), 1))
 
 data.merge$Adult.diapers <- as.numeric(with(data.merge, 
                                             ifelse(grepl("Adult diapers", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE, data.merge$Answer.1), 
