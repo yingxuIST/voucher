@@ -1,13 +1,17 @@
-data <- read.csv("data/extract-2015-03-02.csv")
-summary(data)
 
-str(data)
+###################################################################
+#### Voucher Analysis
 
-levels(data$Question.1)
+####  We have 3 dataframe
+## List of voucher ID linked to ration card -- Each voucher equals a bit more than 15 USD --
+## # of vouchers given to each family is calculated in relation with family size
+## List of case with ration card id and profile
+## A quick form filled during the shopping made with the voucher
 
 
-## Add links between ration card and voucher
-
+source("code/packages.R")
+ 
+## Reformat Voucher ID information
 voucher <- read.csv("data/voucher.csv")
 
 names(voucher)
@@ -48,28 +52,101 @@ voucher.8 <- rename(voucher.8, c("Voucher.8"="Voucher"))
 
 voucher <- rbind(voucher.1, voucher.2, voucher.3, voucher.4, voucher.5, voucher.6, voucher.7, voucher.8)
 
+rm(voucher.1)
+rm(voucher.2)
+rm(voucher.3)
+rm(voucher.4)
+rm(voucher.5)
+rm(voucher.6)
+rm(voucher.7)
+rm(voucher.8)
 
-data.merge <- merge(x=data, y=voucher, by.x="Barcode", by.y="Voucher", all.x=TRUE)
+## Check unique ID
+uniquevoucher <- as.data.frame(unique(voucher$Voucher))
+
+## We have duplicated voucher records that we need to take out before merging
+voucher.dup <-   voucher[!duplicated(voucher$Voucher), ] 
+
+voucher.dup2 <-   voucher.dup[!duplicated(voucher.dup$Ration.Card..), ] 
+
+
+## We may need to clean the ration card before joining
+trim <- function( x ) {
+  gsub("(^[[:space:]]+|[[:space:]]+$)", "", x)
+}
+
+
+voucher.dup$Ration.Card <- toupper(trim(voucher.dup$Ration.Card..))
+
+#################################################################
+###### Now merge ration card with case profile
+rm(progres.case)
+progres.case <- read.csv("data/progrescase.csv")
+progres.case.dup <-   progres.case[!duplicated(progres.case$CurrentRationCardNumber), ] 
+voucher.case  <- merge(x=voucher.dup, y= progres.case.dup,  by.x="Ration.Card", by.y="CurrentRationCardNumber", all.x=TRUE) 
+names(voucher.case)
+
+
+
+###########################################################
+## Add links between ration card and voucher
+rm(data)
+data <- read.csv("data/extract-2015-03-02.csv") #, encoding="WIN1256"
+                
+
+names(data)
+
+data <- data[, c("Scan.ID" , "Service.Name" , "Device.Name" , "User.name"  ,       
+                 "Barcode" ,    
+                 "Timestamp.Scanned",  "Timestamp.Received",
+                 "Question.1" ,  "Answer.1" ,         
+                  "Question.2" ,  "Answer.2", 
+                 "Question.3" , "Answer.3"  , 
+                 "Question.4", "Answer.4"  )]
 
 
 
 
+data$Timestamp.Received <- as.Date(as.character(data$Timestamp.Received), "%d/%m/%Y %H:%M") 
+data$Timestamp.Scanned <- as.Date(as.character(data$Timestamp.Scanned), "%d/%m/%Y %H:%M") 
+#summary(data)
+#str(data)
+#levels(data$Question.1)
 
-#### Now focus 
+## Check unique ID
+uniquebarcode <- as.data.frame(unique(data$Barcode))
+## We have duplicated voucher records that we need to take out before merging
+data.dup <-   data[!duplicated(data$Barcode), ] 
 
 
+###################################
+## Now we can merge
+rm(data.merge)
+data.merge <- merge(x=data.dup, y=voucher.case, by.x="Barcode", by.y="Voucher" )
 
-data.1 <- data[data$Service.Name == "Zaatari_shopping",]
-levels(data.1$Answer.1)
-data.2 <- data[data$Service.Name == "Zaatari gas",]
+data.merge.all <- merge(x=data.dup, y=voucher.case, by.x="Barcode", by.y="Voucher", all.x=TRUE )
+
+data.merge <- data.merge[ , c( "Ration.Card", "Barcode"  ,     "Scan.ID" ,  "Service.Name"  ,  "Device.Name"  ,  "User.name" ,
+                               "Timestamp.Scanned" , "Timestamp.Received",
+                               "Question.1"   ,  "Answer.1" ,  
+                               "Question.2" ,    "Answer.2"  ,
+                               "Question.3" , "Answer.3" ,
+                               "Question.4"  ,  "Answer.4" ,             
+                               "Collector.gender..M.F.", "PA.Gender..M.F."  ,
+                               "Family.Size"   ,   "X..of.vouchers"    ,
+                               "Num_Inds"  ,  "Child_0_14"  , "Child_0_17" ,   "Child_0_18"  ,
+                               "percentage_0_14" ,  "percentage_0_17"   ,   "percentage_0_18" ,
+                               "AVG_Age"   , "STDEV_Age"  ,  "Median_Age"   ,  
+                               "Montharrival"  , "YearArrival"  ,
+                               "arr_crosspoint" , "admlevel3"   ,  
+                               "dem_marriage"  , "dem_age"  ,    "dem_sex",  "edu_highest"  )]
 
 
-
-
-
+data.merge <- data.merge[!rowSums(is.na(data.merge["Num_Inds"])), ]
+data.merge <- data.merge[!rowSums(is.na(data.merge["Scan.ID"])), ]
 
 ### Add a column per item type
-data.merge$gas.fill <- as.numeric(with(data.merge, ifelse(data$Service.Name == "Zaatari gas"), paste0(0), 1))
+#data.merge$gas.fill <- as.numeric(with(data.merge, ifelse(data$Service.Name == "Zaatari gas"), paste0(0), 1))
 
 data.merge$Adult.diapers <- as.numeric(with(data.merge, 
                                             ifelse(grepl("Adult diapers", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE, data.merge$Answer.1), 
@@ -123,16 +200,29 @@ data.merge$Gas.bottle <- as.numeric(with(data.merge,
                                          ifelse(grepl("Gas bottle", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE, data.merge$Answer.1), 
                                                 paste0(0),1)))
 
-names(data.merge)
-## Checking unique voucher
-uniquevoucher <- unique(data.merge$Voucher)
-uniquebarcode <- unique(data.merge$Barcode)
 
+
+
+
+
+
+
+#########################################################################
 #### Now Summmary of consumption per household
-
-str(data.merge)
+#names(data.merge)
+#str(data.merge)
 
 write.csv(data.merge, file = "out/datamerge.csv",na="")
+
+
+#######################################################
+
+#### Now focus 
+data.1 <- data[data$Service.Name == "Zaatari_shopping",]
+levels(data.1$Answer.1)
+data.2 <- data[data$Service.Name == "Zaatari gas",]
+
+
 
 data.sum <- aggregate(data.merge$Barcode ,
                       list(Adult.diapers  = data.merge$Adult.diapers ,          Disinfectant = data.merge$Disinfectant ,

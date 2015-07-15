@@ -8,6 +8,7 @@ packages <- c("ggplot2", # package for elegant data visualization using the Gram
               "Hmisc", # generate a detailled describtion of a given dataset 
               "AER",  # interesting datasets
               "lattice", 
+              "gmodels",
               "MASS", 
               "gvlma",
               "VGAM",
@@ -51,7 +52,7 @@ library(reshape2) ## Restructure data between wide and long format before plotti
 library(maptools) ## Create maps
 library(rgdal) ## Open geographic files
 library(rgeos)
-library(PBSmapping)
+
 library(ggmap) ## get background map from google map
 library(sp) ## Spatial library
 library(raster) ## Managing raster dataset
