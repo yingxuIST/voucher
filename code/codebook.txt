@@ -1,0 +1,68 @@
+
+
+$ Ration.Card             : chr  Ration Card # - one ration card per family
+$ Barcode                 : Factor Voucher Code
+
+$ Scan.ID                 : int  
+$ Service.Name            : Factor w/ 4 levels 
+$ Device.Name             : Factor w/ 23 levels 
+$ User.name               : Factor w/ 9 levels 
+
+$ Timestamp.Scanned       : Date, format: 
+$ Timestamp.Received      : Date, format: 
+
+#### List of questions & answers -- the questions set are different depending on the shop type.
+
+$ Question.1              : Factor w/ 3 levels "Is a male or a female collecting the voucher?" or  "What was bought with this voucher? Please select all that apply""
+$ Answer.1                : Factor w/ 335 levels  
+
+$ Question.2              : Factor w/ 3 levels "Case type" "Who is doing the shopping?"
+$ Answer.2                : Factor w/ 7 levels 
+
+$ Question.3              : Factor w/ 3 levels "Do you think these items are for family use or for sale?" "Please scan the Ration Card"
+$ Answer.3                : Factor w/ 5 levels 
+
+$ Question.4              : Factor w/ 2 levels "Distribution date"
+$ Answer.4                : logi  
+
+
+$ Collector.gender..M.F.  : Factor w/ 2 levels    -- Collector gender (M/F)
+$ PA.Gender..M.F.         : Factor w/ 3 levels   Principal Applicant Gender (M/F)
+$ Family.Size             : int  Family Size  as recorded in distribution list
+$ X..of.vouchers          : int  # of vouchers  allocated to the family - based on distribution ratio
+
+### Variables from Refugee Registration database
+$ Num_Inds                : int  Family Size  as recorded in distribution list
+$ Child_0_14              : int  # Of child between o & 14 years old
+$ Child_0_17              : int  # Of child between o & 17 years old
+$ Child_0_18              : int  # Of child between o & 19 years old
+$ percentage_0_14         : int  % Of child between o & 14 years old
+$ percentage_0_17         : int  % Of child between o & 17 years old
+$ percentage_0_18         : int  % Of child between o & 18 years old
+$ AVG_Age                 : int  Average age within the family
+$ STDEV_Age               : num  Standard deviation for age
+$ Median_Age              : num  Median Age
+$ Montharrival            : Factor Month of Arrival
+$ YearArrival             : int  Year of Arrival
+$ arr_crosspoint          : Factor Type of arrival within the country -  "-"  "Informal"    "Legal"     "Legal - Medical Visa"  "Not Applicable - Born in CoA" "Smuggled"
+$ admlevel3               : Factor Area of Asylum as per registration database -- refers to subdistrict and includes Camps
+$ dem_marriage            : Factor Marrital status of Principal applicant: -    CL:      DV: Divorced    EG: Engaged    MA: Married    SN: Single    SR: Separated     U: unknown    WD: Widowed
+$ dem_age                 : int  
+$ dem_sex                 : Factor w/ 3 levels 
+$ edu_highest             : Factor w/ -- Number indicate grades -- IN: Informal    KG: Kindergarten    NE: Nursery     PG: Postgraduate     TC: Technical College     U: Unknown    UG: Undergraduate 
+
+### Variables obtained while parsin the data
+$ Adult.diapers           : num  
+$ Disinfectant            : num 
+$ Food                    : num  
+$ Household.hardware.items: num  
+$ Other.hygiene.items     : num  
+$ Adult.shampoo           : num  
+$ Baby.diapers            : num  
+$ Dishwashing.liquid      : num  
+$ Womens.sanitary.napkins : num  
+$ Baby.shampoo            : num  
+$ Other.items             : num  
+$ Gas.bottle              : num  
+$ Laundry.soap            : num  
+$ Soap.bars               : num  

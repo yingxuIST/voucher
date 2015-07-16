@@ -12,7 +12,23 @@
 source("code/packages.R")
  
 ## Reformat Voucher ID information
+rm(voucher)
 voucher <- read.csv("data/voucher.csv")
+
+## Family size variable is not recognised a s numeric
+voucher$Family.Size <- as.numeric(voucher$Family.Size)
+### Soem fields are not normalised 
+
+voucher$PA.Gender..M.F. <- gsub("f", "F", voucher$PA.Gender..M.F.)
+voucher$PA.Gender..M.F. <- gsub("m", "M", voucher$PA.Gender..M.F.)
+
+voucher$Collector.gender..M.F. <- gsub("f", "F", voucher$Collector.gender..M.F.)
+voucher$Collector.gender..M.F. <- gsub("m", "M", voucher$Collector.gender..M.F.)
+
+#voucher$PA.Gender..M.F. <- ifelse( voucher$PA.Gender..M.F.=="F", "f" , voucher$PA.Gender..M.F.)
+#voucher$PA.Gender..M.F. <- ifelse( voucher$PA.Gender..M.F.=="M", "m" , voucher$PA.Gender..M.F.)
+#voucher$Collector.gender..M.F. <- ifelse( voucher$Collector.gender..M.F.=="F", "f" , voucher$Collector.gender..M.F.)
+#voucher$Collector.gender..M.F. <- ifelse( voucher$Collector.gender..M.F.=="M", "m" , voucher$Collector.gender..M.F.)
 
 names(voucher)
 
@@ -91,8 +107,10 @@ names(voucher.case)
 ###########################################################
 ## Add links between ration card and voucher
 rm(data)
-data <- read.csv("data/extract-2015-03-02.csv") #, encoding="WIN1256"
-                
+#data <- read.csv("data/extract-2015-03-02.csv") #, encoding="WIN1256"
+
+data <- read.csv("data/123944scans_Jul16_045621.csv")
+
 
 names(data)
 
@@ -107,8 +125,8 @@ data <- data[, c("Scan.ID" , "Service.Name" , "Device.Name" , "User.name"  ,
 
 
 
-data$Timestamp.Received <- as.Date(as.character(data$Timestamp.Received), "%d/%m/%Y %H:%M") 
-data$Timestamp.Scanned <- as.Date(as.character(data$Timestamp.Scanned), "%d/%m/%Y %H:%M") 
+data$Timestamp.Received <- as.Date(as.character(data$Timestamp.Received), "%Y-%m-%d  %H:%M:%S") 
+data$Timestamp.Scanned <- as.Date(as.character(data$Timestamp.Scanned), "%Y-%m-%d  %H:%M:%S") 
 #summary(data)
 #str(data)
 #levels(data$Question.1)
@@ -144,6 +162,8 @@ data.merge <- data.merge[ , c( "Ration.Card", "Barcode"  ,     "Scan.ID" ,  "Ser
 
 data.merge <- data.merge[!rowSums(is.na(data.merge["Num_Inds"])), ]
 data.merge <- data.merge[!rowSums(is.na(data.merge["Scan.ID"])), ]
+
+uniquerationcard <- as.data.frame(unique(data.merge$Ration.Card))
 
 ### Add a column per item type
 #data.merge$gas.fill <- as.numeric(with(data.merge, ifelse(data$Service.Name == "Zaatari gas"), paste0(0), 1))
@@ -203,14 +223,15 @@ data.merge$Gas.bottle <- as.numeric(with(data.merge,
 
 
 
-
-
-
-
 #########################################################################
 #### Now Summmary of consumption per household
 #names(data.merge)
 #str(data.merge)
+
+
+
+
+
 
 write.csv(data.merge, file = "out/datamerge.csv",na="")
 
@@ -224,16 +245,16 @@ data.2 <- data[data$Service.Name == "Zaatari gas",]
 
 
 
-data.sum <- aggregate(data.merge$Barcode ,
-                      list(Adult.diapers  = data.merge$Adult.diapers ,          Disinfectant = data.merge$Disinfectant ,
-                           Food = data.merge$Food ,   Household.hardware.items = data.merge$Household.hardware.items , 
-                           Other.hygiene.items = data.merge$Other.hygiene.items ,      Adult.shampoo = data.merge$Adult.shampoo ,
-                           Baby.diapers = data.merge$Baby.diapers , Dishwashing.liquid = data.merge$Dishwashing.liquid ,
-                           Womens.sanitary.napkins = data.merge$Womens.sanitary.napkins ,  Baby.shampoo = data.merge$Baby.shampoo ,
-                           Other.items = data.merge$Other.items , Gas.bottle = data.merge$Gas.bottle ,
-                           Laundry.soap = data.merge$Laundry.soap , Soap.bars = data.merge$Soap.bars ),
-                      sum, na.rm = TRUE
-                    )
+#data.sum <- aggregate(data.merge$Barcode ,
+#                      list(Adult.diapers  = data.merge$Adult.diapers ,          Disinfectant = data.merge$Disinfectant ,
+#                           Food = data.merge$Food ,   Household.hardware.items = data.merge$Household.hardware.items , 
+#                           Other.hygiene.items = data.merge$Other.hygiene.items ,      Adult.shampoo = data.merge$Adult.shampoo ,
+#                           Baby.diapers = data.merge$Baby.diapers , Dishwashing.liquid = data.merge$Dishwashing.liquid ,
+#                           Womens.sanitary.napkins = data.merge$Womens.sanitary.napkins ,  Baby.shampoo = data.merge$Baby.shampoo ,
+#                           Other.items = data.merge$Other.items , Gas.bottle = data.merge$Gas.bottle ,
+#                           Laundry.soap = data.merge$Laundry.soap , Soap.bars = data.merge$Soap.bars ),
+#                      sum, na.rm = TRUE
+#                    )
 data.cast <- dcast(data.merge, Barcode ~ Adult.diapers +   Disinfectant +
                   Food + Household.hardware.items + Other.hygiene.items + Adult.shampoo +
                     Baby.diapers + Dishwashing.liquid + Womens.sanitary.napkins +
