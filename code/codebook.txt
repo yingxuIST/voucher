@@ -1,4 +1,8 @@
-
+###############################################
+###
+###  CODEBOOK FOR THE DATASET datamerge
+###
+################################################
 
 $ Ration.Card             : chr  Ration Card # - one ration card per family
 $ Barcode                 : Factor Voucher Code
@@ -47,11 +51,11 @@ $ YearArrival             : int  Year of Arrival
 $ arr_crosspoint          : Factor Type of arrival within the country -  "-"  "Informal"    "Legal"     "Legal - Medical Visa"  "Not Applicable - Born in CoA" "Smuggled"
 $ admlevel3               : Factor Area of Asylum as per registration database -- refers to subdistrict and includes Camps
 $ dem_marriage            : Factor Marrital status of Principal applicant: -    CL:      DV: Divorced    EG: Engaged    MA: Married    SN: Single    SR: Separated     U: unknown    WD: Widowed
-$ dem_age                 : int  
-$ dem_sex                 : Factor w/ 3 levels 
-$ edu_highest             : Factor w/ -- Number indicate grades -- IN: Informal    KG: Kindergarten    NE: Nursery     PG: Postgraduate     TC: Technical College     U: Unknown    UG: Undergraduate 
+$ dem_age                 : int  Age of Principal applicant
+$ dem_sex                 : Factor w/ 3 levels Gender of Principal applicant
+$ edu_highest             : Factor w/ Highest Education Level  of Principal applicant -- Number indicate grades -- IN: Informal    KG: Kindergarten    NE: Nursery     PG: Postgraduate     TC: Technical College     U: Unknown    UG: Undergraduate 
 
-### Variables obtained while parsin the data
+### Variables obtained while parsing the data
 $ Adult.diapers           : num  
 $ Disinfectant            : num 
 $ Food                    : num  

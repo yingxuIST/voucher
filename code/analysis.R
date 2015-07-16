@@ -125,8 +125,9 @@ data <- data[, c("Scan.ID" , "Service.Name" , "Device.Name" , "User.name"  ,
 
 
 
-data$Timestamp.Received <- as.Date(as.character(data$Timestamp.Received), "%Y-%m-%d  %H:%M:%S") 
-data$Timestamp.Scanned <- as.Date(as.character(data$Timestamp.Scanned), "%Y-%m-%d  %H:%M:%S") 
+#data$Timestamp.Received <- as.Date(as.character(data$Timestamp.Received), "%Y-%m-%d  %H:%M:%S") 
+#data$Timestamp.Scanned <- as.Date(as.character(data$Timestamp.Scanned), "%Y-%m-%d  %H:%M:%S") 
+
 #summary(data)
 #str(data)
 #levels(data$Question.1)
@@ -170,68 +171,61 @@ uniquerationcard <- as.data.frame(unique(data.merge$Ration.Card))
 
 data.merge$Adult.diapers <- as.numeric(with(data.merge, 
                                             ifelse(grepl("Adult diapers", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE, data.merge$Answer.1), 
-                                                   paste0(0),1)))
+                                                   paste0(1),0)))
 
 data.merge$Disinfectant <- as.numeric(with(data.merge, 
                                            ifelse(grepl("Disinfectant", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE, data.merge$Answer.1), 
-                                                  paste0(0),1)))
+                                                  paste0(1),0)))
 
 data.merge$Food <- as.numeric(with(data.merge, 
                                    ifelse(grepl("Food", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE, data.merge$Answer.1), 
-                                          paste0(0),1)))
+                                          paste0(1),0)))
 
 data.merge$Household.hardware.items <- as.numeric(with(data.merge, 
                                                        ifelse(grepl("Household hardware items", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE, data.merge$Answer.1), 
-                                                              paste0(0),1)))
+                                                              paste0(1),0)))
 
 data.merge$Other.hygiene.items <- as.numeric(with(data.merge, 
                                                   ifelse(grepl("Other hygiene items", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE, data.merge$Answer.1), 
-                                                         paste0(0),1)))
+                                                         paste0(1),0)))
 
 data.merge$Adult.shampoo <- as.numeric(with(data.merge, 
                                             ifelse(grepl("Adult shampoo", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE, data.merge$Answer.1), 
-                                                   paste0(0),1)))
+                                                   paste0(1),0)))
 data.merge$Baby.diapers <- as.numeric(with(data.merge, 
                                            ifelse(grepl("Baby diapers", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE, data.merge$Answer.1), 
-                                                  paste0(0),1)))
+                                                  paste0(1),0)))
 data.merge$Dishwashing.liquid <- as.numeric(with(data.merge, 
                                                  ifelse(grepl("Dishwashing liquid", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE, data.merge$Answer.1), 
-                                                        paste0(0),1)))
+                                                        paste0(1),0)))
 data.merge$Womens.sanitary.napkins <- as.numeric(with(data.merge, 
                                                       ifelse(grepl("Womens' sanitary napkins", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE, data.merge$Answer.1), 
-                                                             paste0(0),1)))
+                                                             paste0(1),0)))
 data.merge$Baby.shampoo <- as.numeric(with(data.merge, 
                                            ifelse(grepl("Baby shampoo", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE, data.merge$Answer.1), 
-                                                  paste0(0),1)))
+                                                  paste0(1),0)))
 data.merge$Other.items <- as.numeric(with(data.merge, 
                                           ifelse(grepl("Other items", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE, data.merge$Answer.1), 
-                                                 paste0(0),1)))
+                                                 paste0(1),0)))
 data.merge$Gas.bottle <- as.numeric(with(data.merge, 
                                          ifelse(grepl("Gas bottle", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE, data.merge$Answer.1), 
-                                                paste0(0),1)))
+                                                paste0(1),0)))
 data.merge$Laundry.soap <- as.numeric(with(data.merge, 
                                            ifelse(grepl("Laundry soap", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE, data.merge$Answer.1), 
-                                                  paste0(0),1)))
+                                                  paste0(1),0)))
 data.merge$Soap.bars <- as.numeric(with(data.merge, 
                                         ifelse(grepl("Soap bars", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE, data.merge$Answer.1), 
-                                               paste0(0),1)))
+                                               paste0(1),0)))
 
 data.merge$Gas.bottle <- as.numeric(with(data.merge, 
                                          ifelse(grepl("Gas bottle", ignore.case = TRUE, fixed = FALSE, useBytes = FALSE, data.merge$Answer.1), 
-                                                paste0(0),1)))
-
-
+                                                paste0(1),0)))
 
 
 #########################################################################
-#### Now Summmary of consumption per household
+#### Last step
 #names(data.merge)
 #str(data.merge)
-
-
-
-
-
 
 write.csv(data.merge, file = "out/datamerge.csv",na="")
 
@@ -239,9 +233,8 @@ write.csv(data.merge, file = "out/datamerge.csv",na="")
 #######################################################
 
 #### Now focus 
-data.1 <- data[data$Service.Name == "Zaatari_shopping",]
-levels(data.1$Answer.1)
-data.2 <- data[data$Service.Name == "Zaatari gas",]
+#data.1 <- data[data$Service.Name == "Zaatari_shopping",]
+#data.2 <- data[data$Service.Name == "Zaatari gas",]
 
 
 
@@ -255,9 +248,9 @@ data.2 <- data[data$Service.Name == "Zaatari gas",]
 #                           Laundry.soap = data.merge$Laundry.soap , Soap.bars = data.merge$Soap.bars ),
 #                      sum, na.rm = TRUE
 #                    )
-data.cast <- dcast(data.merge, Barcode ~ Adult.diapers +   Disinfectant +
-                  Food + Household.hardware.items + Other.hygiene.items + Adult.shampoo +
-                    Baby.diapers + Dishwashing.liquid + Womens.sanitary.napkins +
-                    Baby.shampoo + Other.items + Gas.bottle + Laundry.soap + Soap.bars, sum)
-
-data.cast <- dcast(data.merge, Barcode ~ Adult.diapers , sum)
+#data.cast <- dcast(data.merge, Barcode ~ Adult.diapers +   Disinfectant +
+#                  Food + Household.hardware.items + Other.hygiene.items + Adult.shampoo +
+#                    Baby.diapers + Dishwashing.liquid + Womens.sanitary.napkins +
+#                    Baby.shampoo + Other.items + Gas.bottle + Laundry.soap + Soap.bars, sum)
+#
+#data.cast <- dcast(data.merge, Barcode ~ Adult.diapers , sum)
