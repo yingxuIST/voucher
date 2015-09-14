@@ -9,15 +9,15 @@
 ## A quick form filled during the shopping made with the voucher
 
 
-source("code/packages.R")
+source("Documents/voucherUNHCR/Rscript/code/packages.R")
  
 ## Reformat Voucher ID information
 rm(voucher)
-voucher <- read.csv("data/voucher.csv")
+voucher <- read.csv("Documents/voucherUNHCR/dataset/datamerge.csv")
 
-## Family size variable is not recognised a s numeric
+## Family size variable is not recognised as numeric
 voucher$Family.Size <- as.numeric(voucher$Family.Size)
-### Soem fields are not normalised 
+### Some fields are not normalised 
 
 voucher$PA.Gender..M.F. <- gsub("f", "F", voucher$PA.Gender..M.F.)
 voucher$PA.Gender..M.F. <- gsub("m", "M", voucher$PA.Gender..M.F.)
@@ -254,3 +254,62 @@ write.csv(data.merge, file = "out/datamerge.csv",na="")
 #                    Baby.shampoo + Other.items + Gas.bottle + Laundry.soap + Soap.bars, sum)
 #
 #data.cast <- dcast(data.merge, Barcode ~ Adult.diapers , sum)
+
+
+
+
+######################################################
+
+###unique ration card
+uniqueRationCard <- as.data.frame(unique(voucher$Ration.Card))
+dim(uniqueRationCard)
+
+###unique barcode
+uniqueBarcode <- as.data.frame(unique(voucher$Barcode))
+
+sum(voucher$X..of.vouchers)
+
+#######################################################
+###Gender of principal applicant
+# $PA.Gender..M.F and $dem.sex are not identical, which is supposed to be?
+identical(voucher$PA..Gender.M.F, voucher$dem.sex)
+
+voucher.malePA1 <- voucher[voucher$PA.Gender..M.F == "M",] # male principal applicant  
+voucher.femalePA1 <- voucher[voucher$PA.Gender..M.F =="F",] #female principal applicant
+voucher.gendernaPA1 <- voucher[voucher$PA.Gender..M.F =="",] #female principal applicant
+
+voucher.malePA2 <- voucher[voucher$dem_sex == "M",] # male principal applicant according to Refugee Registration database
+voucher.femalePA2 <- voucher[voucher$dem_sex == "F",] # female principal applicant according to Refugee Registration database
+
+### Gender of Voucher Collector
+voucher.maleCollector <-  voucher[voucher$Collector.gender..M.F == "M",] # male collector 
+voucher.femaleCollector <-  voucher[voucher$Collector.gender..M.F == "F",] # female collector 
+
+### Family Size
+# $Family.Size and $Num_Inds are not identicial, which is supposed to be?
+FamilySizeCount1 <- table(voucher$Family.Size)
+FamilySizeCount2 <- table(voucher$Num_Inds)
+FamilySizeAverage1 <- mean(voucher$Family.Size)
+FamilySizeAverage2 <- mean(voucher$Num_Inds)
+
+
+######################################################
+### shopping behavior
+sum(voucher$Adult.diapers)
+sum(voucher$Disinfectant)
+sum(voucher$Food)
+sum(voucher$Household.hardware.items)
+sum(voucher$Other.hygiene.items)
+sum(voucher$Adult.shampoo)
+sum(voucher$Baby.diapers)
+sum(voucher$Dishwashing.liquid)
+sum(voucher$Womens.sanitary.napkins)
+sum(voucher$Baby.shampoo)
+sum(voucher$Other.items)
+sum(voucher$Gas.bottle)
+sum(voucher$laundry.soap)
+sum(voucher$Laundry.soap)
+sum(voucher$Soap.bars)
+
+dim(voucher$Answer.3)
+ 
