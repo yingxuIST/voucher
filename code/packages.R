@@ -32,6 +32,9 @@ packages <- c("ggplot2", # package for elegant data visualization using the Gram
               "xkcd", ## Style from the xkcd comics 
               "formatR" #, "gWidgetsRGtk2" # used to format the code
               #"XLConnect" ## Read and write excel files
+              "boot" ##bootstrapping; cross validation for GLM
+              "neuralnet" ##artificial neural network
+              "pvclust" ##clustering
 )
 if (length(setdiff(packages, rownames(installed.packages()))) > 0) {
   install.packages(setdiff(packages, rownames(installed.packages())))  
@@ -67,6 +70,9 @@ library(gdata)
 library(gridExtra)
 library(scales)
 library(formatR)
+library(boot)
+library(neuralnet)
+library(pvclust)
 #library(RGtk2)
 #library(gWidgetsRGtk2)
 

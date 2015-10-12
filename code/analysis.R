@@ -258,6 +258,11 @@ write.csv(data.merge, file = "out/datamerge.csv",na="")
 
 
 
+
+
+
+
+
 ######################################################
 
 ###unique ration card
@@ -313,3 +318,43 @@ sum(voucher$Soap.bars)
 
 dim(voucher$Answer.3)
  
+######################################################
+###Generalized Linear Model on Answer 3 - "for sale" or "for family use"
+purpose.glm <- glm(Answer.3 ~ Family.Size + PA.Gender..M.F. + X..of.vouchers + Num_Inds + admlevel3 
+                   + AVG_Age + Child_0_14 + Child_0_17 + Child_0_18 + dem_marriage + dem_age + dem_sex + edu_highest 
+                   + Adult.diapers + Disinfectant + Food + Household.hardware.items + Other.hygiene.items + Adult.shampoo + Baby.diapers 
+                   + Dishwashing.liquid + Womens.sanitary.napkins + Baby.shampoo + Other.items + Gas.bottle + Laundry.soap + Soap.bars + Median_Age
+                   ,data=voucher,family=binomial)
+purpose.glm
+summary(purpose.glm)
+
+purpose.glm2 <- glm(Answer.3 ~  PA.Gender..M.F. + X..of.vouchers + Num_Inds + edu_highest + dem_marriage + dem_age + dem_sex
+                    + Child_0_14 + Child_0_17 + Child_0_18 + Adult.diapers + Food + Household.hardware.items + Other.hygiene.items 
+                    + Adult.shampoo + Baby.diapers + Dishwashing.liquid + Other.items + Gas.bottle + Laundry.soap + Soap.bars
+                   # + Median_Age + admlevel3 + AVG_Age + Family.Size + Disinfectant + Womens.sanitary.napkins + Baby.shampoo
+                   ,data=voucher,family=binomial)
+purpose.glm2
+summary(purpose.glm2)
+anova(purpose.glm,purpose.glm2,test='Chisq')
+
+# five-fold cross-validation
+set.seed(17)
+purpose.5=rep(0,5)
+for(i in 1:5){
+  purpose.glm <- glm(Answer.3 ~  PA.Gender..M.F. + X..of.vouchers + Num_Inds + edu_highest + dem_marriage + dem_age + dem_sex
+                     + Child_0_14 + Child_0_17 + Child_0_18 + Adult.diapers + Food + Household.hardware.items + Other.hygiene.items 
+                     + Adult.shampoo + Baby.diapers + Dishwashing.liquid + Other.items + Gas.bottle + Laundry.soap + Soap.bars
+                     # + Median_Age + admlevel3 + AVG_Age + Family.Size + Disinfectant + Womens.sanitary.napkins + Baby.shampoo
+                     ,data=voucher,family=binomial)
+  purpose.5[i]=cv.glm(voucher,purpose.glm,K=5)$delta[1]
+}
+purpose.5
+
+######################################################
+### unsupervised learning - k-means and hierarchical agglomerative
+
+
+
+######################################################
+### supervised learning - neural network
+
