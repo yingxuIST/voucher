@@ -35,6 +35,8 @@ packages <- c("ggplot2", # package for elegant data visualization using the Gram
               "boot" ##bootstrapping; cross validation for GLM
               "neuralnet" ##artificial neural network
               "pvclust" ##clustering
+              "cluster"##clustering
+              "fpc" ##clustering
 )
 if (length(setdiff(packages, rownames(installed.packages()))) > 0) {
   install.packages(setdiff(packages, rownames(installed.packages())))  
@@ -73,6 +75,8 @@ library(formatR)
 library(boot)
 library(neuralnet)
 library(pvclust)
+library(cluster)
+library(fpc)
 #library(RGtk2)
 #library(gWidgetsRGtk2)
 

@@ -351,10 +351,37 @@ for(i in 1:5){
 purpose.5
 
 ######################################################
-### unsupervised learning - k-means and hierarchical agglomerative
+#########clustering shopping behaviors
+### hierarchical agglomerative
+purchasingGoods <- c("Adult.diapers","Disinfectant","Food","Household.hardware.items","Other.hygiene.items","Adult.shampoo","Baby.diapers",
+                    "Dishwashing.liquid","Womens.sanitary.napkins","Baby.shampoo","Other.items","Gas.bottle","Laundry.soap","Soap.bars")
+purchasingData <- voucher[1:5000,purchasingGoods]
 
+d <- dist(purchasingData, method="euclidean")
+purchasing.fit <- hclust(d,method="ward.D")
+plot(purchasing.fit)
+groups <- cutree(purchasing.fit, k=3)
+rect.hclust(purchasing.fit,k=3,border="red")
 
+cluster.fit <- pvclust(purchasingData,method.hclust="ward.D",method.dist="euclidean")
+plot(cluster.fit)
+
+### k-means 
+# preparing data
+purchasingData2 <- voucher[purchasingGoods]
+purchasingDataNAOmit <- na.omit(purchasingData2)
+purchasingDataCleaned <- scale(purchasingDataNAOmit)
+
+#k-means modeling
+clustering.fit <- kmeans(purchasingDataCleaned,3)
+aggregate(purchasingDataCleaned,by=list(clustering.fit$cluster),FUN=mean)
+
+#visualizing the results
+clusplot(purchasingDataCleaned,clustering.fit$cluster,color=TRUE,shade=TRUE,labels=2,lines=0)
+plotcluster(purchasingDataCleaned,clustering.fit$cluster)
 
 ######################################################
 ### supervised learning - neural network
+
+### unsupervised learning - anomaly detection
 
